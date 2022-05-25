@@ -1,0 +1,7 @@
+szarbot_control:
+  ros__parameters:
+    scan_topic: scan
+    lidar_frame: laser_link
+    serial_port: /dev/ttyUSB0
+    speed_rpm: 600
+    resolution: 0.25
