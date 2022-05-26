@@ -131,8 +131,8 @@ namespace LS01 {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         // return intensity instead of angle
         cmd_buf[1] = 0x50;
-        return serial_write(cmd_buf, 2);
         last_config_time = get_clock()->now();
+        return serial_write(cmd_buf, 2);
     }
 
     int LS01B::start() const {
