@@ -11,12 +11,7 @@
 #include <unistd.h>
 
 namespace LS01 {
-    LS01D::LS01D(const rclcpp::NodeOptions &options) : Node("ls01d", options) {
-        auto scan_topic = declare_parameter<std::string>("scan_topic", "scan");
-        lidar_frame = declare_parameter<std::string>("lidar_frame", "laser_link");
-        auto port = declare_parameter<std::string>("serial_port", "/dev/ttyUSB0");
-        scan_pub = create_publisher<sensor_msgs::msg::LaserScan>(scan_topic, 1);
-        serial_fd = open_serial(port.c_str(), B230400);
+    LS01D::LS01D(const rclcpp::NodeOptions &options) : LS01("ls01d", options, B230400) {
         lidar_thread = std::thread(&LS01D::recv_thread, this);
     }
 
@@ -24,7 +19,6 @@ namespace LS01 {
         terminate_thread = true;
         lidar_thread.join();
         stop();
-        close(serial_fd);
     }
 
     void LS01D::recv_thread() {
@@ -115,15 +109,6 @@ namespace LS01 {
                     break;
             }
         }
-    }
-
-    int LS01D::serial_write(const void *buf, size_t n) const {
-        auto ret = write(serial_fd, buf, n);
-        if (ret < 0)
-            return errno;
-        else if ((size_t) ret != n)
-            return -EINVAL;
-        return 0;
     }
 
     void LS01D::prepare_packet() {

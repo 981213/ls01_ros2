@@ -15,7 +15,7 @@ find_package(std_msgs REQUIRED)
 include_directories(include)
 
 add_library(${PROJECT_NAME} SHARED
-        src/serial.cpp src/ls01b.cpp src/ls01d.cpp)
+        src/ls01.cpp src/ls01b.cpp src/ls01d.cpp)
 ament_target_dependencies(${PROJECT_NAME} rclcpp rclcpp_components std_msgs sensor_msgs)
 rclcpp_components_register_nodes(${PROJECT_NAME} "LS01::LS01B" "LS01::LS01D")
 

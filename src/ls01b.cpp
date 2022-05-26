@@ -11,17 +11,12 @@
 #include <unistd.h>
 
 namespace LS01 {
-    LS01B::LS01B(const rclcpp::NodeOptions &options) : Node("ls01b", options) {
-        auto scan_topic = declare_parameter<std::string>("scan_topic", "scan");
-        lidar_frame = declare_parameter<std::string>("lidar_frame", "laser_link");
-        auto port = declare_parameter<std::string>("serial_port", "/dev/ttyUSB0");
+    LS01B::LS01B(const rclcpp::NodeOptions &options) : LS01("ls01b", options, B460800) {
         speed_rpm = declare_parameter<int>("speed_rpm", 600);
         resolution = declare_parameter<float>("resolution", 0.25);
         validate_resolution();
         scan_per_packet = LS01B_PKT_ANGLE * 100 / resolution_u8;
         pkt_buffer.resize(LS01B_HEADER_LEN + LS01B_DATA_LEN * scan_per_packet);
-        scan_pub = create_publisher<sensor_msgs::msg::LaserScan>(scan_topic, 1);
-        serial_fd = open_serial(port.c_str(), B460800);
         lidar_thread = std::thread(&LS01B::recv_thread, this);
     }
 
@@ -29,7 +24,6 @@ namespace LS01 {
         terminate_thread = true;
         lidar_thread.join();
         stop();
-        close(serial_fd);
     }
 
     void LS01B::recv_thread() {
@@ -113,15 +107,6 @@ namespace LS01 {
                     break;
             }
         }
-    }
-
-    int LS01B::serial_write(const void *buf, size_t n) const {
-        auto ret = write(serial_fd, buf, n);
-        if (ret < 0)
-            return errno;
-        else if ((size_t) ret != n)
-            return -EINVAL;
-        return 0;
     }
 
     int LS01B::config() {

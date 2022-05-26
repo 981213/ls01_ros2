@@ -5,10 +5,7 @@
  * Copyright (c) 2022 Chuanhong Guo <gch981213@gmail.com>
  */
 #pragma once
-#include <ls01/serial.hpp>
-#include <thread>
-#include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/laser_scan.hpp>
+#include <ls01/ls01.hpp>
 
 #define LS01D_PKT_LEN 1812
 
@@ -24,7 +21,7 @@
 #define LS01D_CMD_LEN 7
 
 namespace LS01 {
-    class LS01D : public rclcpp::Node {
+    class LS01D : public LS01 {
     public:
         explicit LS01D(const rclcpp::NodeOptions &options);
 
@@ -36,8 +33,6 @@ namespace LS01 {
         int start() const;
 
         int stop() const;
-
-        int serial_write(const void *buf, size_t n) const;
 
         void process_scan(int start, int end);
 
