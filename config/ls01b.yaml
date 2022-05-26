@@ -1,4 +1,4 @@
-szarbot_control:
+ls01b:
   ros__parameters:
     scan_topic: scan
     lidar_frame: laser_link
