@@ -75,7 +75,7 @@ namespace LS01 {
                     if (pkt_buffer[1] == 0x5a || pkt_buffer[1] == 0x6a) {
                         sync_state = _sync_t::SYNC_SUCCESS;
                         buf_ptr = 2;
-                        RCLCPP_INFO(get_logger(), "packet synchronized.");
+                        RCLCPP_DEBUG(get_logger(), "packet header found.");
                     } else {
                         sync_state = _sync_t::SYNC1;
                     }
