@@ -1,9 +1,10 @@
-//
-// Created by user on 5/23/22.
-//
-
-#ifndef LS01B_WS_LS01B_HPP
-#define LS01B_WS_LS01B_HPP
+// SPDX-License-Identifier: BSD-1-Clause
+/*
+ * ROS2 node for LeiShen LS01B v2 Lidar
+ *
+ * Copyright (c) 2022 Chuanhong Guo <gch981213@gmail.com>
+ */
+#pragma once
 
 #include <ls01/serial.hpp>
 #include <thread>
@@ -73,5 +74,3 @@ namespace LS01 {
         std::vector<uint8_t> pkt_buffer;
     };
 }
-
-#endif //LS01B_WS_LS01B_HPP

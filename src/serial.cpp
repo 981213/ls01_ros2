@@ -1,8 +1,13 @@
+// SPDX-License-Identifier: BSD-1-Clause
+/*
+ * Open a serial port on Linux
+ *
+ * Copyright (c) 2022 Chuanhong Guo <gch981213@gmail.com>
+ */
+
 #include <ls01/serial.hpp>
 #include <sys/ioctl.h>
 #include <fcntl.h>
-#include <unistd.h>
-#include <poll.h>
 #include <stdexcept>
 #include <cerrno>
 #include <cstring>

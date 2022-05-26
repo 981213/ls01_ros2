@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: BSD-1-Clause
+/*
+ * ROS2 node for LeiShen LS01B v2 Lidar
+ *
+ * Copyright (c) 2022 Chuanhong Guo <gch981213@gmail.com>
+ */
 #include <ls01/ls01b.hpp>
 #include <string>
 #include <chrono>

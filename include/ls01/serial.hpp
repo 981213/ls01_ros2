@@ -1,11 +1,14 @@
-//
-// Created by user on 5/23/22.
-//
+// SPDX-License-Identifier: BSD-1-Clause
+/*
+ * Open a serial port on Linux
+ *
+ * Copyright (c) 2022 Chuanhong Guo <gch981213@gmail.com>
+ */
+#pragma once
 
-#ifndef BUILD_SERIAL_HPP
-#define BUILD_SERIAL_HPP
 #include <termios.h>
+
 namespace LS01 {
-    int open_serial(const char*port, speed_t baud_option);
+    int open_serial(const char *port, speed_t baud_option);
 }
-#endif //BUILD_SERIAL_HPP
+

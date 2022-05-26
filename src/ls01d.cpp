@@ -1,3 +1,9 @@
+// SPDX-License-Identifier: BSD-1-Clause
+/*
+ * ROS2 node for LeiShen LS01D Lidar
+ *
+ * Copyright (c) 2022 Chuanhong Guo <gch981213@gmail.com>
+ */
 #include <ls01/ls01d.hpp>
 #include <string>
 #include <chrono>
@@ -100,7 +106,8 @@ namespace LS01 {
                         scan_processed = 0;
                         // LS01D runs at 10rps -> 100 ms per scan. Wait 75ms for 3/4 packet.
                         std::this_thread::sleep_for(std::chrono::milliseconds(75));
-                    } else if (!scan_processed && buf_ptr >= LS01D_PKT_HDR_LEN + process_threshold * LS01D_PKT_SCAN_LEN) {
+                    } else if (!scan_processed &&
+                               buf_ptr >= LS01D_PKT_HDR_LEN + process_threshold * LS01D_PKT_SCAN_LEN) {
                         process_scan(0, process_threshold);
                         scan_processed = process_threshold;
                     }
