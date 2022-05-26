@@ -73,7 +73,7 @@ namespace LS01 {
                         sync_state = _sync_t::HEADER;
                         break;
                     }
-                    if (rdlen == pkt_left) {
+                    if ((size_t) rdlen == pkt_left) {
                         if (pkt_buffer[6] == LS01D_PKT_B6) {
                             sync_state = _sync_t::SYNC_SUCCESS;
                             RCLCPP_DEBUG(get_logger(), "packet header found.");
@@ -94,7 +94,7 @@ namespace LS01 {
                         break;
                     }
                     buf_ptr += rdlen;
-                    if (rdlen == pkt_left) {
+                    if ((size_t) rdlen == pkt_left) {
                         last_pkt_time = get_clock()->now();
                         buf_ptr = 0;
                         process_scan(scan_processed, LS01D_NUM_SCAN);
@@ -121,7 +121,7 @@ namespace LS01 {
         auto ret = write(serial_fd, buf, n);
         if (ret < 0)
             return errno;
-        else if (ret != n)
+        else if ((size_t) ret != n)
             return -EINVAL;
         return 0;
     }

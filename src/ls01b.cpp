@@ -94,7 +94,7 @@ namespace LS01 {
                         RCLCPP_ERROR(get_logger(), "read error: %s", strerror(errno));
                         sync_state = _sync_t::SYNC1;
                         break;
-                    } else if (rdlen == pkt_left) {
+                    } else if ((size_t) rdlen == pkt_left) {
                         buf_ptr = 0;
                         ret = process_packet();
                         if (ret == -EOPNOTSUPP) {
@@ -119,7 +119,7 @@ namespace LS01 {
         auto ret = write(serial_fd, buf, n);
         if (ret < 0)
             return errno;
-        else if (ret != n)
+        else if ((size_t) ret != n)
             return -EINVAL;
         return 0;
     }
