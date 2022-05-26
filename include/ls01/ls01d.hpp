@@ -40,17 +40,11 @@ namespace LS01 {
 
         int finish_packet();
 
-        int serial_fd = -1;
-        std::string lidar_frame;
-        std::thread lidar_thread;
         rclcpp::Time last_pkt_time;
         rclcpp::Time msg_time;
-        bool terminate_thread = false;
         int scan_processed;
-        static constexpr int timeout = 2000;
         // process the partial packet when we received this amount of scans
         static constexpr int process_threshold = 320;
-        rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr scan_pub;
         sensor_msgs::msg::LaserScan::UniquePtr scan_msg;
         uint8_t pkt_buffer[LS01D_PKT_LEN];
     };
