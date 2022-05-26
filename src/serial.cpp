@@ -11,6 +11,8 @@
 #include <stdexcept>
 #include <cerrno>
 #include <cstring>
+#include <unistd.h>
+#include <fcntl.h>
 
 int LS01::open_serial(const char *port, speed_t baud_option) {
     int ret;

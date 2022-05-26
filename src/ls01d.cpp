@@ -8,6 +8,7 @@
 #include <string>
 #include <chrono>
 #include <poll.h>
+#include <unistd.h>
 
 namespace LS01 {
     LS01D::LS01D(const rclcpp::NodeOptions &options) : Node("ls01d", options) {
