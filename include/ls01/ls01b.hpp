@@ -62,6 +62,7 @@ namespace LS01 {
         int speed_rpm;
         rclcpp::Time msg_time;
         rclcpp::Time last_pkt_time;
+        rclcpp::Time last_config_time;
         uint8_t resolution_u8;
         int measurement_count;
         bool terminate_thread = false;

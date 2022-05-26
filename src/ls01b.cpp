@@ -91,7 +91,11 @@ namespace LS01 {
                         buf_ptr = 0;
                         ret = process_packet();
                         if (ret == -EOPNOTSUPP) {
-                            RCLCPP_WARN(get_logger(), "lidar config mismatch.");
+                            if ((get_clock()->now() - last_config_time).seconds() > 5) {
+                                RCLCPP_WARN(get_logger(), "lidar config mismatch after 5s. Reconfiguring...");
+                                config();
+                            }
+                            sync_state = _sync_t::SYNC1;
                         } else if (ret) {
                             RCLCPP_WARN(get_logger(), "invalid packet.");
                             sync_state = _sync_t::SYNC1;
@@ -136,6 +140,7 @@ namespace LS01 {
         // return intensity instead of angle
         cmd_buf[1] = 0x50;
         return serial_write(cmd_buf, 2);
+        last_config_time = get_clock()->now();
     }
 
     int LS01B::start() const {
