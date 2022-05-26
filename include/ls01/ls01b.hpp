@@ -26,14 +26,17 @@ namespace LS01 {
                 resolution_u8 = 100;
                 resolution = 1;
                 measurement_count = 360;
+                angle_multiplier = 1;
             } else if (resolution >= 0.5) {
                 resolution_u8 = 50;
                 resolution = 0.5;
                 measurement_count = 360 * 2;
+                angle_multiplier = 2;
             } else {
                 resolution_u8 = 25;
                 resolution = 0.25;
                 measurement_count = 360 * 4;
+                angle_multiplier = 4;
             }
         }
 
@@ -59,7 +62,6 @@ namespace LS01 {
         uint8_t resolution_u8;
         int measurement_count;
         int scan_per_packet;
-        sensor_msgs::msg::LaserScan::UniquePtr scan_msg;
         std::vector<uint8_t> pkt_buffer;
     };
 }

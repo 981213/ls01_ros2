@@ -174,6 +174,7 @@ namespace LS01 {
     void LS01B::finish_packet() {
         scan_msg->scan_time = (last_pkt_time - msg_time).seconds();
         scan_msg->time_increment = scan_msg->scan_time / (float) measurement_count;
+        filter_scan();
         scan_pub->publish(std::move(scan_msg));
     }
 

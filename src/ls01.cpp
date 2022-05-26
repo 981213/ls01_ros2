@@ -21,6 +21,19 @@ namespace LS01 {
         lidar_frame = declare_parameter<std::string>("lidar_frame", "laser_link");
         auto port = declare_parameter<std::string>("serial_port", "/dev/ttyUSB0");
         scan_pub = create_publisher<sensor_msgs::msg::LaserScan>(scan_topic, 1);
+        declare_parameter("scan_disable_bounds", std::vector<long>{});
+        param_subscriber = std::make_shared<rclcpp::ParameterEventHandler>(this);
+        auto cb = [this](const rclcpp::Parameter &p) {
+            // types in ROS2 are messy...
+            const auto &p_array = p.as_integer_array();
+            std::vector<int16_t> p_i16;
+            p_i16.reserve(p_array.size());
+            for (const auto &i: p_array)
+                p_i16.push_back((int16_t) i);
+            this->set_scan_bounds(std::move(p_i16));
+        };
+        cb(get_parameter("scan_disable_bounds"));
+        cb_handle = param_subscriber->add_parameter_callback("scan_disable_bounds", cb);
         open_serial(port.c_str(), baud_option);
     }
 
@@ -83,5 +96,19 @@ namespace LS01 {
         else if ((size_t) ret != n)
             return -EINVAL;
         return 0;
+    }
+
+    void LS01::set_scan_bounds(std::vector<int16_t> bounds) {
+        if (bounds.size() & 1)
+            bounds.push_back(360);
+        for (size_t i = 0; i < bounds.size(); i += 2) {
+            if (bounds[i + 1] <= bounds[i]) {
+                RCLCPP_WARN(get_logger(), "invalid scan disable bounds: upper bound %d is smaller than lower bound %d",
+                            bounds[i + 1], bounds[i]);
+                return;
+            }
+        }
+        std::lock_guard<std::mutex> guard(scan_bounds_lock);
+        scan_disable_bounds = std::move(bounds);
     }
 }

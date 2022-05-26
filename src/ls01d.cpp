@@ -132,6 +132,7 @@ namespace LS01 {
         // Unused lidar motor speed (rps): pkt_buffer[1] / 15.0;
         scan_msg->scan_time = (last_pkt_time - msg_time).seconds();
         scan_msg->time_increment = scan_msg->scan_time / (float) LS01D_NUM_SCAN;
+        filter_scan();
         scan_pub->publish(std::move(scan_msg));
         return 0;
     }
