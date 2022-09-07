@@ -15,9 +15,9 @@ find_package(std_msgs REQUIRED)
 include_directories(include)
 
 add_library(${PROJECT_NAME} SHARED
-        src/ls01.cpp src/ls01b.cpp src/ls01d.cpp)
+        src/ls01.cpp src/ls01b.cpp src/ls01d.cpp src/lsn10.cpp)
 ament_target_dependencies(${PROJECT_NAME} rclcpp rclcpp_components std_msgs sensor_msgs)
-rclcpp_components_register_nodes(${PROJECT_NAME} "LS01::LS01B" "LS01::LS01D")
+rclcpp_components_register_nodes(${PROJECT_NAME} "LS01::LS01B" "LS01::LS01D" "LS01::LSN10")
 
 add_executable(ls01b src/exe/ls01b.cpp)
 target_link_libraries(ls01b ${PROJECT_NAME})
@@ -26,6 +26,10 @@ ament_target_dependencies(ls01b rclcpp)
 add_executable(ls01d src/exe/ls01d.cpp)
 target_link_libraries(ls01d ${PROJECT_NAME})
 ament_target_dependencies(ls01d rclcpp)
+
+add_executable(lsn10 src/exe/lsn10.cpp)
+target_link_libraries(lsn10 ${PROJECT_NAME})
+ament_target_dependencies(lsn10 rclcpp)
 
 install(TARGETS
         ${PROJECT_NAME}
@@ -36,6 +40,7 @@ install(TARGETS
 install(TARGETS
         ls01b
         ls01d
+        lsn10
         DESTINATION lib/${PROJECT_NAME})
 
 install(
