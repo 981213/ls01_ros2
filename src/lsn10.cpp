@@ -13,7 +13,7 @@
 namespace LS01 {
     LSN10::LSN10(const rclcpp::NodeOptions &options) : LS01("lsn10", options, B230400) {
         pkt_buffer.resize(LSN10_PKT_LEN);
-        // FIXME: angle_multiplier = 
+        set_angle_multiplier(1.0 / LSN10_RESOL * 100);
         lidar_thread = std::thread(&LSN10::recv_thread, this);
     }
 
@@ -155,7 +155,7 @@ namespace LS01 {
     void LSN10::finish_packet() {
         scan_msg->scan_time = (last_pkt_time - msg_time).seconds();
         scan_msg->time_increment = scan_msg->scan_time / (float) LSN10_MEASUREMENT_CNT;
-        // FIXME: filter_scan();
+        filter_scan();
         scan_pub->publish(std::move(scan_msg));
     }
 

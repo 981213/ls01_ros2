@@ -21,7 +21,6 @@ namespace LS01 {
 
     protected:
         int serial_fd = -1;
-        int angle_multiplier = 1;
         std::string lidar_frame;
         std::thread lidar_thread;
         bool terminate_thread = false;
@@ -34,8 +33,8 @@ namespace LS01 {
         void filter_scan() {
             std::lock_guard<std::mutex> guard(scan_bounds_lock);
             for (size_t i = 0; i < scan_disable_bounds.size(); i += 2) {
-                int start = scan_disable_bounds[i] * angle_multiplier;
-                int count = (scan_disable_bounds[i + 1] - scan_disable_bounds[i]) * angle_multiplier;
+                int start = scan_disable_bounds[i];
+                int count = (scan_disable_bounds[i + 1] - scan_disable_bounds[i]);
                 memset(&(scan_msg->ranges[start]), 0, count * sizeof(scan_msg->ranges[0]));
                 memset(&(scan_msg->intensities[start]), 0, count * sizeof(scan_msg->intensities[0]));
             }
@@ -43,9 +42,12 @@ namespace LS01 {
 
         int serial_write(const void *buf, size_t n) const;
 
+        void set_angle_multiplier(float multiplier);
+
     private:
         std::shared_ptr<rclcpp::ParameterEventHandler> param_subscriber;
         std::shared_ptr<rclcpp::ParameterCallbackHandle> cb_handle;
+        float angle_multiplier = 1;
 
         void open_serial(const char *port, speed_t baud_option);
 

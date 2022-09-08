@@ -26,17 +26,17 @@ namespace LS01 {
                 resolution_u8 = 100;
                 resolution = 1;
                 measurement_count = 360;
-                angle_multiplier = 1;
+                set_angle_multiplier(1);
             } else if (resolution >= 0.5) {
                 resolution_u8 = 50;
                 resolution = 0.5;
                 measurement_count = 360 * 2;
-                angle_multiplier = 2;
+                set_angle_multiplier(2);
             } else {
                 resolution_u8 = 25;
                 resolution = 0.25;
                 measurement_count = 360 * 4;
-                angle_multiplier = 4;
+                set_angle_multiplier(4);
             }
         }
 

@@ -107,8 +107,17 @@ namespace LS01 {
                             bounds[i + 1], bounds[i]);
                 return;
             }
+            bounds[i] *= angle_multiplier;
+            bounds[i + 1] *= angle_multiplier;
         }
         std::lock_guard<std::mutex> guard(scan_bounds_lock);
         scan_disable_bounds = std::move(bounds);
+    }
+
+    void LS01::set_angle_multiplier(float multiplier) {
+        std::lock_guard<std::mutex> guard(scan_bounds_lock);
+        for (auto &i: scan_disable_bounds)
+            i = i / angle_multiplier * multiplier;
+        angle_multiplier = multiplier;
     }
 }

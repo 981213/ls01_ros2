@@ -10,7 +10,7 @@ def generate_launch_description():
         [
             FindPackageShare("ls01"),
             "config",
-            "ls01d.yaml",
+            "lsn10.yaml",
         ]
     )
 
