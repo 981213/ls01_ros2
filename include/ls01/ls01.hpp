@@ -8,6 +8,7 @@
 
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/laser_scan.hpp>
 #include <termios.h>
@@ -23,7 +24,7 @@ namespace LS01 {
         int serial_fd = -1;
         std::string lidar_frame;
         std::thread lidar_thread;
-        bool terminate_thread = false;
+        std::atomic_bool terminate_thread = false;
         static constexpr int timeout = 2000;
         rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr scan_pub;
         sensor_msgs::msg::LaserScan::UniquePtr scan_msg;
