@@ -1,0 +1,5 @@
+lsn10p:
+  ros__parameters:
+    scan_topic: scan
+    lidar_frame: laser_link
+    serial_port: /dev/ttyACM0

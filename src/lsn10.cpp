@@ -162,20 +162,30 @@ namespace LS01 {
         uint32_t start_angle = pkt_buffer[5] << 8 | pkt_buffer[6];
         uint32_t stop_angle = pkt_buffer[pkt_buffer.size() - 3] << 8 | pkt_buffer[pkt_buffer.size() - 2];
         uint32_t angle_diff = (stop_angle < start_angle ? stop_angle + 36000 : stop_angle) - start_angle;
-        // division that rounds to the closest integer
-        uint32_t cur_angle_increment = (angle_diff + (measurement_per_pkt - 1) / 2) / (measurement_per_pkt - 1);
+
+        angle_incr_acc += angle_diff;
+        angle_incr_acc_cnt++;
+
+        if (angle_incr_acc_cnt < LSN10_ANGLE_NUM_SAMPLES)
+            return 0;
+
+        uint32_t cur_angle_increment = round(angle_incr_acc / LSN10_ANGLE_NUM_SAMPLES / (measurement_per_pkt - 1));
+        angle_incr_acc = 0;
+        angle_incr_acc_cnt = 0;
 
         if (cur_angle_increment != angle_increment) {
             angle_increment = cur_angle_increment;
             angle_stable_count = 0;
-            RCLCPP_DEBUG(get_logger(), "Motor speed unstable. Current resolution: %.2f degree.", angle_increment / 100.0);
+            RCLCPP_DEBUG(get_logger(), "Motor speed unstable. Current resolution: %.2f degree.",
+                         angle_increment / 100.0);
         } else {
             angle_stable_count++;
         }
 
-        if(angle_stable_count > LSN10_ANGLE_STABLE_COUNT) {
+        if (angle_stable_count > LSN10_ANGLE_STABLE_COUNT) {
             lidar_params_determined = true;
-            float angle_incr_degree = angle_increment / 100.0f;
+            angle_increment = cur_angle_increment;
+            float angle_incr_degree = cur_angle_increment / 100.0f;
             angle_incr_rad = angle_incr_degree / 360 * 2 * M_PI;
             measurement_cnt = 36000 / angle_increment;
             RCLCPP_INFO(get_logger(), "Motor stabilized. Resolution: %.2f degree.", angle_incr_degree);
@@ -218,3 +228,4 @@ namespace LS01 {
 #include "rclcpp_components/register_node_macro.hpp"
 
 RCLCPP_COMPONENTS_REGISTER_NODE(LS01::LSN10)
+RCLCPP_COMPONENTS_REGISTER_NODE(LS01::LSN10P)

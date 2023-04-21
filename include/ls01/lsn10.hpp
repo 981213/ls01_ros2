@@ -9,8 +9,11 @@
 #include <ls01/ls01.hpp>
 
 #define LSN10_PKT_LEN 58
+#define LSN10P_PKT_LEN 108
 #define LSN10_MEASUREMENT_PER_PKT 16
-#define LSN10_ANGLE_STABLE_COUNT 500
+#define LSN10P_MEASUREMENT_PER_PKT 32
+#define LSN10_ANGLE_NUM_SAMPLES 200
+#define LSN10_ANGLE_STABLE_COUNT 5
 
 namespace LS01 {
     class LSN10Common : public LS01 {
@@ -48,6 +51,8 @@ namespace LS01 {
         uint32_t angle_stable_count = 0;
         uint32_t measurement_cnt;
         float angle_incr_rad = 0;
+        float angle_incr_acc = 0;
+        uint32_t angle_incr_acc_cnt = 0;
         bool lidar_params_determined = false;
 
     };
@@ -58,6 +63,15 @@ namespace LS01 {
                 : LSN10Common("lsn10", options, B230400, LSN10_MEASUREMENT_PER_PKT) {
             pkt_buffer.resize(LSN10_PKT_LEN);
             lidar_thread = std::thread(&LSN10::recv_thread, this);
+        }
+    };
+
+    class LSN10P : public LSN10Common {
+    public:
+        explicit LSN10P(const rclcpp::NodeOptions &options)
+                : LSN10Common("lsn10p", options, B460800, LSN10P_MEASUREMENT_PER_PKT) {
+            pkt_buffer.resize(LSN10P_PKT_LEN);
+            lidar_thread = std::thread(&LSN10P::recv_thread, this);
         }
     };
 }
