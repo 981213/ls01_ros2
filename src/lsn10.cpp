@@ -213,6 +213,8 @@ namespace LS01 {
                 scan_ptr = 0;
                 finish_packet();
                 prepare_packet();
+                // make sure we don't publish empty scans if this is the last measurement.
+                last_stop_angle = 0;
             }
             // the scan data angle is clockwise while LaserScan message expects ccw. Invert it.
             uint32_t idx = measurement_cnt - scan_ptr - 1;
