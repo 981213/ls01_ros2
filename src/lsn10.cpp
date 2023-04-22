@@ -12,8 +12,6 @@
 
 namespace LS01 {
     LSN10Common::~LSN10Common() {
-        terminate_thread = true;
-        lidar_thread.join();
         stop();
     }
 
@@ -169,7 +167,7 @@ namespace LS01 {
         if (angle_incr_acc_cnt < LSN10_ANGLE_NUM_SAMPLES)
             return 0;
 
-        uint32_t cur_angle_increment = round(angle_incr_acc / LSN10_ANGLE_NUM_SAMPLES / (measurement_per_pkt - 1));
+        uint32_t cur_angle_increment = round(angle_incr_acc / LSN10_ANGLE_NUM_SAMPLES / (LSN10_MEASUREMENT_PER_PKT - 1));
         angle_incr_acc = 0;
         angle_incr_acc_cnt = 0;
 
@@ -208,7 +206,10 @@ namespace LS01 {
         last_stop_angle = pkt_buffer[pkt_buffer.size() - 3] << 8 | pkt_buffer[pkt_buffer.size() - 2];
 
         auto data_ptr = &pkt_buffer[7];
-        for (int i = 0; i < measurement_per_pkt; i++) {
+        uint16_t ranges[LSN10_MEASUREMENT_PER_PKT];
+        uint8_t intensities[LSN10_MEASUREMENT_PER_PKT];
+        extract_measurements(data_ptr, ranges, intensities);
+        for (int i = 0; i < LSN10_MEASUREMENT_PER_PKT; i++) {
             if (scan_ptr >= measurement_cnt) {
                 scan_ptr = 0;
                 finish_packet();
@@ -218,10 +219,9 @@ namespace LS01 {
             }
             // the scan data angle is clockwise while LaserScan message expects ccw. Invert it.
             uint32_t idx = measurement_cnt - scan_ptr - 1;
-            scan_msg->ranges[idx] = ((data_ptr[0] << 8) | data_ptr[1]) / 1000.0f;
-            scan_msg->intensities[idx] = data_ptr[2];
+            scan_msg->ranges[idx] = ranges[i] / 1000.0f;
+            scan_msg->intensities[idx] = intensities[i];
             scan_ptr++;
-            data_ptr += 3;
         }
         return 0;
     }
