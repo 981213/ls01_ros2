@@ -18,7 +18,9 @@ namespace LS01 {
     class LSN10Common : public LS01 {
     public:
         LSN10Common(const std::string &node_name, const rclcpp::NodeOptions &options, speed_t baud_option)
-                : LS01(node_name, options, baud_option) {}
+                : LS01(node_name, options, baud_option) {
+            scan_rate = declare_parameter("scan_rate", 10);
+        }
 
         ~LSN10Common() override;
 
@@ -28,6 +30,8 @@ namespace LS01 {
         std::vector<uint8_t> pkt_buffer;
     private:
         int start() const;
+
+        int set_rate(uint8_t hz) const;
 
         int stop() const;
 
@@ -53,6 +57,7 @@ namespace LS01 {
         double angle_incr_acc = 0;
         uint32_t angle_incr_acc_cnt = 0;
         bool lidar_params_determined = false;
+        uint8_t scan_rate;
 
     };
 

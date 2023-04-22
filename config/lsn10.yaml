@@ -5,3 +5,4 @@ lsn10:
     serial_port: /dev/ttyUSB0
     range_min: 0.1
     range_max: 12.0
+    scan_rate: 10

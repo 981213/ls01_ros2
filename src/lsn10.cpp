@@ -27,6 +27,8 @@ namespace LS01 {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         start();
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        set_rate(scan_rate);
 
         while (!terminate_thread) {
             pollfd pfd = {serial_fd, POLLIN, 0};
@@ -35,6 +37,8 @@ namespace LS01 {
                 RCLCPP_WARN(get_logger(), "Lidar timeout. Restarting...");
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 start();
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                set_rate(scan_rate);
                 continue;
             } else if (ret < 0) {
                 RCLCPP_ERROR(get_logger(), "poll error: %s", strerror(errno));
@@ -110,6 +114,20 @@ namespace LS01 {
                                               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                               0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0xfa, 0xfb};
         return serial_write(start_motor, sizeof(start_motor));
+    }
+
+    int LSN10Common::set_rate(uint8_t hz) const {
+        uint8_t rate_packet[188] = {0xa5, 0x5a, 0x55};
+        if (hz < 6 || hz > 12) {
+            RCLCPP_ERROR(get_logger(), "Scan rate should be 6 ~ 12 Hz.");
+            return -EINVAL;
+        }
+        rate_packet[172] = char(hz);
+        rate_packet[184] = 0x0a;
+        rate_packet[185] = 0X01;
+        rate_packet[186] = 0xfa;
+        rate_packet[187] = 0xfb;
+        return serial_write(rate_packet, sizeof(rate_packet));
     }
 
     int LSN10Common::stop() const {
