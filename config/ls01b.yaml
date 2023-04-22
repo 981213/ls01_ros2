@@ -3,5 +3,7 @@ ls01b:
     scan_topic: scan
     lidar_frame: laser_link
     serial_port: /dev/ttyUSB0
+    range_min: 0.15
+    range_max: 8.0
     speed_rpm: 600
     resolution: 0.25

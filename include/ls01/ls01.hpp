@@ -22,6 +22,7 @@ namespace LS01 {
 
     protected:
         int serial_fd = -1;
+        float range_min, range_max;
         std::string lidar_frame;
         std::thread lidar_thread;
         std::atomic_bool terminate_thread = false;

@@ -20,6 +20,8 @@ namespace LS01 {
         auto scan_topic = declare_parameter<std::string>("scan_topic", "scan");
         lidar_frame = declare_parameter<std::string>("lidar_frame", "laser_link");
         auto port = declare_parameter<std::string>("serial_port", "/dev/ttyUSB0");
+        range_min = declare_parameter("range_min", 0.1);
+        range_max = declare_parameter("range_max", 8.0);
         scan_pub = create_publisher<sensor_msgs::msg::LaserScan>(scan_topic, 1);
         declare_parameter("scan_disable_bounds", std::vector<long>{});
         param_subscriber = std::make_shared<rclcpp::ParameterEventHandler>(this);

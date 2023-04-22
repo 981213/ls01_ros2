@@ -142,8 +142,8 @@ namespace LS01 {
         scan_msg->angle_min = 0;
         scan_msg->angle_increment = angle_incr_rad;
         scan_msg->angle_max = 2 * M_PI - angle_incr_rad;
-        scan_msg->range_min = 0.1;
-        scan_msg->range_max = 12.0;
+        scan_msg->range_min = range_min;
+        scan_msg->range_max = range_max;
         scan_msg->intensities.resize(measurement_cnt, 0);
         scan_msg->ranges.resize(measurement_cnt, 0);
     }
